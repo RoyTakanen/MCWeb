@@ -1,6 +1,6 @@
 {
   "name": "mcweb",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Minecraft web chat client",
   "main": "app.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "mineflayer": "^2.32.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "xss": "^1.0.8"
   }
 }

@@ -6,6 +6,7 @@ const mineflayer = require('mineflayer')
 const server = app.listen(process.env.PORT);
 const io = require('socket.io').listen(server);
 const motd2html = require('./motd2html');
+const xss = require("xss");
 
 let sess = {
     secret: 'keyboard cat',
@@ -78,15 +79,17 @@ app.get('/kirjaudu-ulos', function (req, res) {
 
 io.on('connection', (socket) => {
     socket.on('chatstart', function(sessid) {
-        sockets[socket.id] = sessid
-        users[sessid].on('chat', function (username, message, translate, jsonMsg) {
-            //console.log(motd2html.toHtml(jsonMsg.toMotd()))
-            //socket.emit('chat message', {username, message})
-            socket.emit('chat message', {message: motd2html.toHtml(jsonMsg.toMotd())})
-        })
-        socket.on('chat message', function(message) {
-            users[sessid].chat(message)
-        })
+        try {
+            sockets[socket.id] = sessid
+            users[sessid].on('message', function (jsonMsg) {
+                socket.emit('chat message', {message: motd2html.toHtml(xss(jsonMsg.toMotd()))})
+            })
+            socket.on('chat message', function(message) {
+                users[sessid].chat(message)
+            })    
+        } catch (error) {
+            socket.emit('chat message', {message: 'Please login again. You are currently not logged in.'})
+        }
     })
     console.log('a user connected');
     socket.on('disconnect', () => {
