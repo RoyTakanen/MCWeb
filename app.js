@@ -5,6 +5,7 @@ const session = require('express-session')
 const mineflayer = require('mineflayer')
 const server = app.listen(process.env.PORT);
 const io = require('socket.io').listen(server);
+const motd2html = require('./motd2html');
 
 let sess = {
     secret: 'keyboard cat',
@@ -19,8 +20,10 @@ app.use(session(sess))
 app.set('view engine', 'ejs')
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(express.static('public'))
 
 let users = new Object()
+let sockets = new Object()
 
 app.get('/', function (req, res) {
     if (req.session.user) {
@@ -65,7 +68,9 @@ app.get('/chat', function (req, res) {
 })
 
 app.get('/kirjaudu-ulos', function (req, res) {
+    delete users[req.session.id]
     req.session.destroy(function(err) {
+        if (err) throw err
         res.redirect('/')
     })
 })
@@ -73,8 +78,11 @@ app.get('/kirjaudu-ulos', function (req, res) {
 
 io.on('connection', (socket) => {
     socket.on('chatstart', function(sessid) {
-        users[sessid].on('chat', function (username, message) {
-            socket.emit('chat message', {username, message})
+        sockets[socket.id] = sessid
+        users[sessid].on('chat', function (username, message, translate, jsonMsg) {
+            //console.log(motd2html.toHtml(jsonMsg.toMotd()))
+            //socket.emit('chat message', {username, message})
+            socket.emit('chat message', {message: motd2html.toHtml(jsonMsg.toMotd())})
         })
         socket.on('chat message', function(message) {
             users[sessid].chat(message)
@@ -82,6 +90,8 @@ io.on('connection', (socket) => {
     })
     console.log('a user connected');
     socket.on('disconnect', () => {
-      console.log('user disconnected');
+        let sessid = sockets[socket.id] 
+        delete users[sessid]
+        console.log('user disconnected');
     })
 })
