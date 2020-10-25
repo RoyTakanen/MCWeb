@@ -1,10 +1,11 @@
 {
   "name": "mcweb",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Minecraft web chat client",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon ."
+    "test": "nodemon .",
+    "start": "node ."
   },
   "keywords": [
     "MC",

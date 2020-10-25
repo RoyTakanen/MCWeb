@@ -12,7 +12,7 @@ let sess = {
     secret: 'keyboard cat',
     cookie: {}
 }
-if (app.get('env') === 'production') {
+if (app.get('env') === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
