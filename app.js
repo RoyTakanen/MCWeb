@@ -93,6 +93,7 @@ io.on('connection', (socket) => {
     })
     console.log('a user connected');
     socket.on('disconnect', () => {
+        users[sessid].quit('Bye bye!')
         let sessid = sockets[socket.id] 
         delete users[sessid]
         console.log('user disconnected');

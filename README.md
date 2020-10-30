@@ -32,3 +32,8 @@ And that is it. You can now run start script and use your own self-hosted Minecr
 ```bash
 npm start
 ```
+
+## Coming
+
+1. Tab autocomplete for commands
+2. Tab listing
