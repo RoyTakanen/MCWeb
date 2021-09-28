@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+  mcweb:
+    build: ./
+    container_name: mcweb
+    ports:
+      - 8080:8080
