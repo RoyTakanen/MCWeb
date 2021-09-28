@@ -1,6 +1,6 @@
 # MCWEB
 
-![logo](images/logo.png)
+![logo](public/logo.png)
 
 ## What is it?
 
